@@ -1,79 +1,118 @@
 # Hogwarts Explorer
 
-Aplicativo Flutter que combina a exploração do universo Harry Potter com uma agenda pessoal de eventos. O projeto original foi mantido como base: consulta HP-API, personagens, feitiços, casas, filtros, paginação, detalhes, tema e fallback visual continuam disponíveis.
+<div align="center">
+  <img src="assets/brand/hogwarts_explorer_icon.png" alt="Ícone do Hogwarts Explorer" width="160">
+
+  <p><strong>Explore o mundo mágico. Organize suas próprias aventuras.</strong></p>
+
+  <p>
+    Aplicativo mobile desenvolvido com Flutter que reúne conteúdos do universo de Harry Potter e uma agenda pessoal com suporte a uso offline.
+  </p>
+</div>
+
+## Sobre o projeto
+
+O Hogwarts Explorer é um projeto acadêmico para dispositivos Android. Ele combina uma área de exploração de personagens, casas e feitiços com ferramentas para planejar e acompanhar eventos pessoais.
+
+A aplicação integra dados de serviços externos, autenticação Firebase e armazenamento local. A agenda salva as alterações no dispositivo primeiro e sincroniza com a nuvem quando há conexão.
 
 ## Funcionalidades
 
-- Explorar personagens, feitiços, casas e GIFs GIPHY.
-- Buscar GIFs em grade com paginação usando `offset`.
-- Criar conta, entrar, recuperar senha e encerrar sessão pelo Firebase Authentication.
-- Criar, consultar, editar e excluir eventos associados ao usuário autenticado.
-- SQLite local como fonte de dados imediata e fila persistente de sincronização.
-- Firebase Firestore na estrutura `users/{uid}/registros/{id}`.
-- Calendário mensal funcional conectado aos eventos locais e recebidos do Firestore.
-- Registrar coordenadas do dispositivo em um evento e calcular distância em linha reta até uma referência em Alnwick Castle.
-- Escolher uma imagem da galeria e conservar uma cópia privada no armazenamento do app.
-- Indicadores de sincronização, tentativas manuais e sincronização ao abrir, autenticar, reconectar e retornar ao primeiro plano.
-- Tema Material 3, ícone Android e splash screen personalizados.
+### Exploração do universo mágico
+
+- Consulte personagens e feitiços usando a [HP-API](https://hp-api.onrender.com/).
+- Explore personagens organizados por casas e veja páginas de detalhes.
+- Pesquise GIFs temáticos com a API da GIPHY.
+- Use busca, filtros e navegação paginada nas áreas de exploração.
+
+### Agenda pessoal
+
+- Crie, edite, consulte e exclua eventos.
+- Visualize eventos em uma agenda e em um calendário mensal.
+- Continue usando os eventos salvos no dispositivo mesmo sem internet.
+- Acompanhe o estado da sincronização e envie alterações pendentes quando a conexão voltar.
+- Registre a localização atual em um evento e consulte a distância em linha reta até o Castelo de Alnwick, usado como referência para Hogwarts.
+- Escolha uma imagem da galeria para anexar ao evento. As imagens ficam armazenadas no dispositivo.
+
+### Conta e dados
+
+- Crie uma conta e entre com e-mail e senha.
+- Os eventos sincronizados ficam associados à conta autenticada.
+- A autenticação é feita pelo Firebase Authentication e os dados em nuvem pelo Cloud Firestore.
 
 ## Tecnologias
 
-Flutter 3.47.5 / Dart 3.13.4 no ambiente usado para esta cópia; Firebase Core, Firebase Auth, Cloud Firestore, SQLite por `sqflite`, `connectivity_plus`, `geolocator`, `table_calendar`, `image_picker`, `path_provider`, `http` e `uuid`.
+| Área | Tecnologias |
+| --- | --- |
+| Aplicativo | Flutter, Dart e Material 3 |
+| Autenticação e nuvem | Firebase Authentication e Cloud Firestore |
+| Armazenamento offline | SQLite com sqflite |
+| Calendário | table_calendar |
+| Localização | geolocator |
+| Imagens | image_picker e path_provider |
+| APIs | HP-API, GIPHY e http |
 
-## Configuração e execução
+## Executar no Android
 
-1. Instale Flutter para Android e siga [SETUP_FIREBASE.md](SETUP_FIREBASE.md). A configuração Firebase do app Android ainda precisa ser gerada para o identificador `com.hogwarts.explorer.hogwarts_explorer`. Até lá, a área pública Explorar pode ser aberta pela tela de configuração; autenticação e agenda ficam bloqueadas.
-2. Na pasta do projeto, execute `flutter pub get`.
-3. Para usar GIPHY, gere/rotacione uma chave própria e execute:
+### Requisitos
 
-   ```powershell
-   flutter run --dart-define=GIPHY_API_KEY=SUA_CHAVE
-   ```
+- Flutter SDK compatível com Dart 3.13.4 ou superior dentro da série 3.x.
+- Android SDK configurado, com um dispositivo Android conectado ou um emulador disponível.
+- Projeto Firebase com Authentication por e-mail/senha e Cloud Firestore configurados.
 
-   Sem chave, os elementos visuais usam fallback e a busca GIPHY explica como configurá-la. Uma chave embutida em um app cliente pode ser extraída; aplique restrições e cotas no provedor. Uma chave real encontrada no repositório original foi removida desta cópia e deve ser rotacionada se ainda estiver ativa.
+### Instalação
 
-4. Execute `flutter run` ou abra o diretório no VS Code/Android Studio.
-5. Crie o APK com `flutter build apk --release` depois de concluir o Firebase. O app precisa de uma configuração válida para autenticação e dados em nuvem. Para publicar em loja, substitua a assinatura debug herdada por uma chave release própria.
+Na pasta do projeto, execute:
 
-## Firebase e segurança
+~~~bash
+flutter pub get
+flutter run
+~~~
 
-O projeto Firebase preferido é `apk-auth-joaofgralaki`, reaproveitado do projeto secundário de autenticação. O `applicationId` principal continua `com.hogwarts.explorer.hogwarts_explorer`; as opções Firebase do app secundário não foram copiadas. O arquivo `lib/firebase_options.dart` no ZIP é um placeholder deliberado até a execução do FlutterFire CLI. As regras estão em `firestore.rules` e o deploy está configurado em `firebase.json`.
+O Flutter compila e inicia a aplicação no dispositivo ou emulador selecionado.
 
-Leia [SETUP_FIREBASE.md](SETUP_FIREBASE.md) antes de configurar. Não inclua chaves de service account. As opções de cliente geradas pelo FlutterFire não são credenciais administrativas.
+### Configuração do Firebase
 
-## Arquitetura resumida
+Esta cópia está configurada para o projeto Firebase apk-auth-joaofgralaki e para o pacote Android com.hogwarts.explorer.hogwarts_explorer.
 
-```text
-lib/
-├── database/       # Esquema SQLite, eventos locais e fila pendente
-├── models/         # Modelos HP-API e AgendaEvent
-├── pages/          # Auth, navegação, explorar, agenda, calendário, perfil e GIFs
-├── repositories/   # AgendaRepository: SQLite local + integração remota
-├── services/       # Auth, Firestore, sincronização, localização, imagens e APIs
-├── theme/          # Tema Material 3
-├── utils/          # Filtros e paginação já existentes
-└── widgets/        # Componentes reaproveitados da aplicação original
-```
+Para usar outro projeto Firebase:
 
-O fluxo offline está detalhado em [OFFLINE_SYNC_FLOW.md](OFFLINE_SYNC_FLOW.md). A lista de validação real está em [TEST_CHECKLIST.md](TEST_CHECKLIST.md), e a preparação da defesa em [DEFESA.md](DEFESA.md).
+1. Cadastre nele um app Android com o pacote com.hogwarts.explorer.hogwarts_explorer.
+2. Ative o provedor **E-mail/senha** no Firebase Authentication e crie o banco Cloud Firestore.
+3. Na raiz do projeto, gere as configurações FlutterFire:
 
-## Testes
+   ~~~bash
+   flutterfire configure --project=SEU_PROJECT_ID --platforms=android
+   ~~~
 
-```powershell
+4. Publique as regras de segurança do Firestore:
+
+   ~~~bash
+   firebase deploy --only firestore:rules --project SEU_PROJECT_ID
+   ~~~
+
+## Configuração opcional da GIPHY
+
+A busca de GIFs usa uma chave da API da GIPHY. Informe sua chave ao iniciar o app:
+
+~~~bash
+flutter run --dart-define=GIPHY_API_KEY=SUA_CHAVE_GIPHY
+~~~
+
+Sem essa chave, as buscas GIPHY não retornam resultados e a aplicação usa seus estados visuais alternativos. Não inclua uma chave pessoal diretamente no código ou neste README.
+
+## Qualidade e testes
+
+Para analisar o código e executar os testes automatizados do projeto:
+
+~~~bash
 flutter analyze
 flutter test
-```
+~~~
 
-Os testes automatizados cobrem os modelos, conversões Firestore, lógica existente e operações SQLite/fila. Os testes de serviço Firebase e o roteiro offline com aparelho/emulador dependem de credenciais e de um app Firebase registrado; seu estado precisa ser conferido em [BUILD_STATUS.md](BUILD_STATUS.md).
+## Observações
 
-## Capturas de tela
-
-As telas principais não foram capturadas nesta preparação: o ambiente não tem emulador Android e a configuração Firebase do app ainda depende da conta autorizada. Não incluí imagens de telas simuladas como evidência de funcionamento. O ícone e a arte de abertura estão em `assets/brand/`.
-
-## Limitações conhecidas
-
-- A configuração real Firebase depende de cadastrar o app Android, verificar Auth e Firestore no Console e gerar `firebase_options.dart` pela conta autorizada.
-- Imagens ficam apenas no dispositivo e não são enviadas ao Firestore. A troca de aparelho não transfere essas imagens.
-- A localização de Hogwarts é uma referência aproximada no Castelo de Alnwick; a distância calculada é em linha reta, não rota.
-- Uma chave GIPHY distribuída no aplicativo não é segredo absoluto.
-- O fluxo de sincronização adota política documentada de sobrescrita pela operação local pendente que for sincronizada por último.
+- A agenda funciona localmente e sincroniza os registros da conta autenticada com o Firestore.
+- As imagens selecionadas são mantidas no armazenamento do dispositivo e não são enviadas ao Firestore.
+- A distância até o Castelo de Alnwick é calculada em linha reta; não representa uma rota de navegação.
+- Projeto acadêmico e de fãs, sem vínculo oficial com os detentores dos direitos de Harry Potter.
